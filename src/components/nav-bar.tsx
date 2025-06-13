@@ -35,7 +35,7 @@ export function Navbar() {
         {/* Logo Section */}
         <Link href="/home" className="mr-6 flex items-center space-x-2"> {/* Updated href to /home */}
           <Logo />
-          <span className="font-bold text-xl text-[#141414]">SoleMate</span>
+          <span className="font-bold text-xl text-[#141414]">Min-Commerce</span>
         </Link>
 
         {/* Desktop Navigation Links Section */}

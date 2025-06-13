@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Noto_Sans } from "next/font/google";
-import { Navbar } from "@/components/nav-bar"; // Updated import
+import { Geist, Geist_Mono } from "next/font/google";
+import NavBarClient from "@/components/ui/nav-bar-client";
 import "./globals.css";
 
-const plusJakartaSans = Plus_Jakarta_Sans({
-  variable: "--font-plus-jakarta-sans",
+const geistSans = Geist({
+  variable: "--font-geist-sans",
   subsets: ["latin"],
 });
 
-const notoSans = Noto_Sans({
-  variable: "--font-noto-sans",
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
@@ -33,10 +33,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${plusJakartaSans.variable} ${notoSans.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Navbar /> {/* Updated component */}
-        <main className="pt-20">{children}</main> {/* Adjusted pt-20 for new header height */}
+        <NavBarClient />
+        <main className="pt-16">{children}</main>
       </body>
     </html>
   );

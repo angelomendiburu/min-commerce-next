@@ -6,7 +6,7 @@ import Image from 'next/image'; // For Hero Section
 
 export const metadata: Metadata = {
   title: 'min-commerce-next',
-  description: 'Welcome to SoleMate, your destination for the latest and greatest in footwear.', // Added a description
+  description: 'Welcome to Min-Commerce, your destination for the latest and greatest in footwear.', // Added a description
 };
 
 // Placeholder data for featured products - can be the same as page.tsx or curated
