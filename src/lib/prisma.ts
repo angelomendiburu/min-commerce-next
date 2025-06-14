@@ -4,20 +4,29 @@ const logOptions: Prisma.LogLevel[] = process.env.NODE_ENV === 'development'
   ? ['query', 'info', 'warn', 'error']
   : ['error'];
 
-const prismaClientSingleton = () => {
-  if (!process.env.DATABASE_URL) {
+function getDatabaseUrl() {
+  const url = process.env.DATABASE_URL;
+  if (!url) {
     console.error('❌ DATABASE_URL no está definida');
+    console.error('Environment:', process.env.NODE_ENV);
+    console.error('Available env vars:', Object.keys(process.env).join(', '));
     throw new Error('DATABASE_URL no está definida');
   }
+  return url;
+}
 
+const prismaClientSingleton = () => {
+  const url = getDatabaseUrl();
+  
   console.log('🔄 Inicializando nueva instancia de PrismaClient...');
   console.log('📡 Conectando a la base de datos...');
+  console.log('🌍 Ambiente:', process.env.NODE_ENV);
   
   return new PrismaClient({
     log: logOptions,
     datasources: {
       db: {
-        url: process.env.DATABASE_URL
+        url
       }
     }
   })

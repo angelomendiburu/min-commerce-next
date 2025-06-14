@@ -9,6 +9,13 @@ const nextConfig = {
     ],
     unoptimized: process.env.NODE_ENV === 'development'
   },
+  env: {
+    DATABASE_URL: process.env.DATABASE_URL,
+    DIRECT_URL: process.env.DIRECT_URL,
+  },
+  experimental: {
+    serverActions: true,
+  },
   typescript: {
     // Solo para desarrollo, no usar en producción
     ignoreBuildErrors: process.env.NODE_ENV === 'development'
