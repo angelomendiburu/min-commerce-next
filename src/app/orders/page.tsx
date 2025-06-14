@@ -1,20 +1,37 @@
 import { prisma } from "@/lib/prisma";
+import { Order, OrderItem } from "@prisma/client";
+
+type OrderWithItems = Order & {
+  items: OrderItem[];
+};
 
 export default async function OrdersPage() {
-  const orders = await prisma.order.findMany({
-    orderBy: {
-      createdAt: 'desc'
-    },
-    include: {
-      items: true
-    }
-  });
+  let orders: OrderWithItems[] = [];
+  let error: string | null = null;
+
+  try {
+    orders = await prisma.order.findMany({
+      orderBy: {
+        createdAt: 'desc'
+      },
+      include: {
+        items: true
+      }
+    });
+  } catch (e) {
+    console.error('Error fetching orders:', e);
+    error = 'No se pudieron cargar las órdenes. Por favor, intenta más tarde.';
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Mis Órdenes</h1>
       
-      {orders.length === 0 ? (
+      {error ? (
+        <div className="text-center py-12">
+          <p className="text-lg text-red-500">{error}</p>
+        </div>
+      ) : orders.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-lg text-muted-foreground">No tienes órdenes aún</p>
         </div>
