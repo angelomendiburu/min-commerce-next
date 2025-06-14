@@ -1,5 +1,9 @@
 import CatalogClient from './catalog-client';
 import { prisma } from '@/lib/prisma';
+import { PrismaClientInitializationError } from '@prisma/client/runtime/library';
+
+export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
 
 export const metadata = {
   title: 'Catálogo - MinCommerce',
@@ -8,15 +12,14 @@ export const metadata = {
 
 export default async function CatalogPage() {
   try {
-    // Obtener productos de la base de datos
-    console.log('Intentando obtener productos...');
+    console.log('🔍 Intentando obtener productos...');
     const products = await prisma.product.findMany({
       orderBy: {
         createdAt: 'desc'
       }
     });
 
-    console.log('Productos encontrados:', products?.length || 0);
+    console.log('✅ Productos encontrados:', products?.length || 0);
 
     return (
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -25,11 +28,21 @@ export default async function CatalogPage() {
       </div>
     );
   } catch (error) {
-    console.error('Error fetching products:', error);
+    console.error('❌ Error obteniendo productos:', error);
+    
+    let errorMessage = 'Lo sentimos, ha ocurrido un error al cargar los productos.';
+    
+    if (error instanceof PrismaClientInitializationError) {
+      errorMessage = 'Error de conexión con la base de datos. Por favor, inténtalo más tarde.';
+      console.error('🔴 Error de inicialización de Prisma:', error.message);
+    }
+
     return (
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Error</h1>
-        <p>Lo sentimos, ha ocurrido un error al cargar los productos.</p>
+        <h1 className="text-3xl font-bold mb-8 text-red-600">Error</h1>
+        <div className="bg-red-50 border-l-4 border-red-500 p-4">
+          <p className="text-red-700">{errorMessage}</p>
+        </div>
       </div>
     );
   }
