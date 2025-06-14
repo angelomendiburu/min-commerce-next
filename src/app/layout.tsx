@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Noto_Sans } from "next/font/google";
-import { Navbar } from "@/components/nav-bar"; // Updated import
+import { Navbar } from "@/components/nav-bar";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -18,7 +18,6 @@ export const metadata: Metadata = {
   description: "Un simple e-commerce con Next.js",
   icons: {
     icon: [
-      { url: '/app/favicon.ico' },
       { url: '/favicon.ico', sizes: '32x32' },
       { url: '/favicon.ico', sizes: '16x16' },
     ],

@@ -6,8 +6,12 @@ const nextConfig = {
         protocol: 'https',
         hostname: '**',
       }
-    ]
-  }
+    ],
+    unoptimized: false
+  },
+  output: 'standalone',
+  poweredByHeader: false,
+  reactStrictMode: true,
 }
 
 module.exports = nextConfig
