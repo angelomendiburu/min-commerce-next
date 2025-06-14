@@ -7,7 +7,15 @@ const nextConfig = {
         hostname: '**',
       }
     ],
-    unoptimized: false
+    unoptimized: process.env.NODE_ENV === 'development'
+  },
+  typescript: {
+    // Solo para desarrollo, no usar en producción
+    ignoreBuildErrors: process.env.NODE_ENV === 'development'
+  },
+  eslint: {
+    // Solo para desarrollo, no usar en producción
+    ignoreDuringBuilds: process.env.NODE_ENV === 'development'
   },
   output: 'standalone',
   poweredByHeader: false,

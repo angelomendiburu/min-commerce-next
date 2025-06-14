@@ -1,15 +1,18 @@
 {
   "name": "min-commerce-next",
   "version": "0.1.0",
-  "private": true,  "scripts": {
+  "private": true,
+  "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "db:seed": "ts-node prisma/seed.ts"
+    "db:seed": "ts-node prisma/seed.ts",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.1.1",    "@prisma/client": "^5.9.1",
+    "@hookform/resolvers": "^5.1.1",
+    "@prisma/client": "^5.9.1",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-label": "^2.1.7",
@@ -27,7 +30,8 @@
     "tailwind-merge": "^3.3.1",
     "zod": "^3.25.61",
     "zustand": "^5.0.5"
-  },  "devDependencies": {
+  },
+  "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/node": "^20.19.0",
     "@types/react": "^18.2.55",
