@@ -14,13 +14,12 @@ export function ProductCard({ id, name, price, imageUrl, className }: ProductCar
   return (
     <Card className={cn("w-full max-w-sm border-none shadow-none rounded-xl overflow-hidden group transition-all duration-300 ease-in-out hover:shadow-md", className)}>
       <CardHeader className="p-0 relative aspect-square w-full overflow-hidden rounded-xl">
-        {/* Using next/image for better performance and optimization */}
-        <Image
+        {/* Using next/image for better performance and optimization */}        <Image
           src={imageUrl}
           alt={name}
-          layout="fill"
-          objectFit="cover" // Equivalent to bg-cover
-          className="transition-transform duration-300 ease-in-out group-hover:scale-105"
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
         />
         {/* You can add overlays or quick action buttons here if needed */}
       </CardHeader>

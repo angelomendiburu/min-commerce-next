@@ -13,36 +13,52 @@ export const metadata: Metadata = {
 const featuredProducts: ProductCardProps[] = [
   {
     id: "1",
-    name: "Urban Explorer Sneaker",
-    price: "$135",
-    imageUrl: "https://images.unsplash.com/photo-1552346154-21d32810aba3?q=80&w=800&auto=format&fit=crop",
+    name: "Joma Sport Elite Runner",
+    price: "$159.99",
+    imageUrl: "/images/products/JSPEEW2417V_4.jpg",
   },
   {
     id: "2",
-    name: "Trailblazer Hiking Boot",
-    price: "$175",
-    imageUrl: "https://images.unsplash.com/photo-1520650199933-99b100030778?q=80&w=800&auto=format&fit=crop",
+    name: "Brooks Running Pro",
+    price: "$189.99",
+    imageUrl: "/images/products/brooks running.png",
   },
   {
     id: "3",
-    name: "Classic Comfort Loafer",
-    price: "$110",
-    imageUrl: "https://images.unsplash.com/photo-1575532799792-active?q=80&w=800&auto=format&fit=crop", // Placeholder, might need actual active link
+    name: "Reebok Nano X3",
+    price: "$129.99",
+    imageUrl: "/images/products/reebook nano.jpg",
   },
   {
     id: "4",
-    name: "Sporty Sprint Runner",
-    price: "$90",
-    imageUrl: "https://images.unsplash.com/photo-1593081891919-97c60840995e?q=80&w=800&auto=format&fit=crop",
+    name: "Saucony Endorphin Pro 3",
+    price: "$199.99",
+    imageUrl: "/images/products/Saucony-zapatilla-Running-endorphin-pro-3-hombre-negro.jpg",
   },
 ];
 
 // Placeholder data for categories
 const categories = [
-  { name: "Men's Shoes", href: "/catalog/men", imageUrl: "https://images.unsplash.com/photo-1605348532760-6753d2c43cb4?q=80&w=600&auto=format&fit=crop" },
-  { name: "Women's Shoes", href: "/catalog/women", imageUrl: "https://images.unsplash.com/photo-1531124303428-268f751553ea?q=80&w=600&auto=format&fit=crop" },
-  { name: "Kids' Shoes", href: "/catalog/kids", imageUrl: "https://images.unsplash.com/photo-1511556532299-8f662fc26c06?q=80&w=600&auto=format&fit=crop" },
-  { name: "Accessories", href: "/catalog/accessories", imageUrl: "https://images.unsplash.com/photo-1576408983592-a997031d0c59?q=80&w=600&auto=format&fit=crop" },
+  { 
+    name: "Running", 
+    href: "/catalog?category=running", 
+    imageUrl: "/images/products/brooks running.png"
+  },
+  { 
+    name: "Training", 
+    href: "/catalog?category=training", 
+    imageUrl: "/images/products/reebook nano.jpg"
+  },
+  { 
+    name: "Competition", 
+    href: "/catalog?category=competition", 
+    imageUrl: "/images/products/Saucony-zapatilla-Running-endorphin-pro-3-hombre-negro.jpg"
+  },
+  { 
+    name: "Sport", 
+    href: "/catalog?category=sport", 
+    imageUrl: "/images/products/JSPEEW2417V_4.jpg"
+  },
 ];
 
 export default function HomePage() {
