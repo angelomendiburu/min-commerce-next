@@ -1,56 +1,30 @@
-import { PrismaClient, Prisma } from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 
-const logOptions: Prisma.LogLevel[] = process.env.NODE_ENV === 'development' 
-  ? ['query', 'info', 'warn', 'error']
-  : ['error'];
-
-function getDatabaseUrl() {
-  const url = process.env.DATABASE_URL;
-  if (!url) {
-    console.error('❌ DATABASE_URL no está definida');
-    console.error('Environment:', process.env.NODE_ENV);
-    console.error('Available env vars:', Object.keys(process.env).join(', '));
-    throw new Error('DATABASE_URL no está definida');
-  }
-  return url;
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined
 }
 
-const prismaClientSingleton = () => {
-  const url = getDatabaseUrl();
-  
-  console.log('🔄 Inicializando nueva instancia de PrismaClient...');
-  console.log('📡 Conectando a la base de datos...');
-  console.log('🌍 Ambiente:', process.env.NODE_ENV);
-  
-  return new PrismaClient({
-    log: logOptions,
-    datasources: {
-      db: {
-        url
-      }
+function createPrismaClient() {
+  if (!process.env.DATABASE_URL) {
+    if (process.env.NODE_ENV === 'production') {
+      console.error('❌ DATABASE_URL no está definida en producción')
+      console.error('Por favor, configura DATABASE_URL en las variables de entorno de Vercel')
+      // En producción, lanzamos un error que puede ser manejado por la aplicación
+      throw new Error('DATABASE_URL no está configurada en producción')
+    } else {
+      throw new Error(
+        'DATABASE_URL no está definida en desarrollo.\n' +
+        'Por favor, crea un archivo .env.local con la variable DATABASE_URL'
+      )
     }
+  }
+
+  return new PrismaClient({
+    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
   })
 }
 
-type GlobalWithPrisma = typeof globalThis & {
-  prisma?: ReturnType<typeof prismaClientSingleton>
-}
+const prismaClient = globalForPrisma.prisma ?? createPrismaClient()
+globalForPrisma.prisma = prismaClient
 
-const globalWithPrisma = global as GlobalWithPrisma
-
-let prisma: ReturnType<typeof prismaClientSingleton>
-
-try {
-  prisma = globalWithPrisma.prisma ?? prismaClientSingleton()
-  console.log('✅ Cliente Prisma inicializado correctamente');
-} catch (error) {
-  console.error('❌ Error inicializando Prisma:', error);
-  throw error;
-}
-
-if (process.env.NODE_ENV !== 'production') {
-  globalWithPrisma.prisma = prisma;
-  console.log('💾 Cliente Prisma guardado en variable global para desarrollo');
-}
-
-export { prisma }
+export { prismaClient as prisma }

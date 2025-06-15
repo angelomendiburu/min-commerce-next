@@ -2,7 +2,7 @@ import Image from 'next/image';
 import AddToCart from './add-to-cart';
 
 async function getProduct(id: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_URL || ''}/api/products/${id}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_URL || ''}/api/products?id=${id}`, {
     // This ensures we're getting fresh data
     cache: 'no-store'
   });
@@ -10,9 +10,9 @@ async function getProduct(id: string) {
   if (!res.ok) {
     // Throw a more descriptive error based on the status
     if (res.status === 404) {
-      throw new Error('Product not found');
+      throw new Error('Producto no encontrado');
     }
-    throw new Error('Failed to fetch product');
+    throw new Error('Error al obtener el producto');
   }
   
   return res.json();

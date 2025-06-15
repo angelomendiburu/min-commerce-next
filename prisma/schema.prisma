@@ -1,5 +1,3 @@
-// Prisma schema for the e-commerce application
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,7 +5,7 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL") // Used for direct connection to Neon
+  directUrl = env("DIRECT_URL")
 }
 
 model Product {
@@ -25,9 +23,9 @@ model Order {
   id        String      @id @default(cuid())
   total     Float
   status    OrderStatus @default(PENDING)
-  items     OrderItem[]
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
+  items     OrderItem[]
 }
 
 model OrderItem {
@@ -35,10 +33,10 @@ model OrderItem {
   quantity  Int
   price     Float
   orderId   String
-  order     Order    @relation(fields: [orderId], references: [id])
   productId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  order     Order    @relation(fields: [orderId], references: [id])
 }
 
 enum OrderStatus {
