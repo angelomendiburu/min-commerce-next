@@ -5,6 +5,7 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
+  // DIRECT_URL es opcional y solo se usa en producción con Neon
   directUrl = env("DIRECT_URL")
 }
 
