@@ -1,9 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/hooks/use-cart';
+import { useSession } from "next-auth/react";
+import AuthModal from '@/components/ui/auth-modal2';
+import { useSearchParams } from "next/navigation";
 import type { Product } from '@/types/product';
 
 interface CatalogClientProps {
@@ -11,32 +14,72 @@ interface CatalogClientProps {
 }
 
 export default function CatalogClient({ initialProducts }: CatalogClientProps) {
-  const [searchTerm, setSearchTerm] = useState('');
   const [products] = useState(initialProducts);
   const { addToCart, isInCart } = useCart();
+  const { data: session } = useSession();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [pendingProduct, setPendingProduct] = useState<Product | null>(null);
+  const searchParams = useSearchParams();
+  const initialSearch = searchParams?.get("search") || "";
+  const [searchTerm, setSearchTerm] = useState(initialSearch);
+
+  // Sincronizar searchTerm con query param si cambia
+  useEffect(() => {
+    if (initialSearch !== searchTerm) {
+      setSearchTerm(initialSearch);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialSearch]);
+
+  // Si el usuario inicia sesión y hay producto pendiente, lo agrega automáticamente
+  if (session?.user && pendingProduct) {
+    addToCart(pendingProduct);
+    setPendingProduct(null);
+    setShowAuthModal(false);
+  }
+
+  const handleAddToCart = (product: Product) => {
+    if (!session?.user) {
+      setPendingProduct(product);
+      setShowAuthModal(true);
+      // Guarda en localStorage para persistencia tras login
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('pendingProductId', product.id);
+      }
+      return;
+    }
+    addToCart(product);
+  };
+
+  // Al cargar, si hay producto pendiente en localStorage y el usuario está logueado, lo agrega
+  useEffect(() => {
+    if (session?.user && typeof window !== 'undefined') {
+      const pendingId = localStorage.getItem('pendingProductId');
+      if (pendingId && !isInCart(pendingId)) {
+        const prod = products.find(p => p.id === pendingId);
+        if (prod) {
+          addToCart(prod);
+        }
+        localStorage.removeItem('pendingProductId');
+        setShowAuthModal(false);
+      }
+    }
+  }, [session, products, addToCart, isInCart]);
 
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     product.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Recibe el término de búsqueda desde window (Navbar global)
+  useEffect(() => {
+    const handler = (e: CustomEvent) => setSearchTerm(e.detail || "");
+    window.addEventListener("catalog-search", handler as EventListener);
+    return () => window.removeEventListener("catalog-search", handler as EventListener);
+  }, []);
+
   return (
     <div className="flex flex-col space-y-6">
-      <div className="relative max-w-md mx-auto w-full px-4">
-        <input
-          type="text"
-          placeholder="Buscar productos..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-        />
-        <div className="absolute inset-y-0 right-0 flex items-center pr-7">
-          <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </div>
-      </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
         {filteredProducts.map((product) => (
           <div
@@ -87,7 +130,7 @@ export default function CatalogClient({ initialProducts }: CatalogClientProps) {
                 </div>
 
                 <button
-                  onClick={() => addToCart(product)}
+                  onClick={() => handleAddToCart(product)}
                   disabled={isInCart(product.id) || product.stock === 0}
                   className={`w-full py-2 px-4 rounded-lg font-medium transition-colors ${
                     isInCart(product.id)
@@ -108,6 +151,7 @@ export default function CatalogClient({ initialProducts }: CatalogClientProps) {
           </div>
         ))}
       </div>
+      <AuthModal open={showAuthModal} onClose={() => setShowAuthModal(false)} />
     </div>
   );
 }

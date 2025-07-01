@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Noto_Sans } from "next/font/google";
 import { Navbar } from "@/components/nav-bar";
+import CustomSessionProvider from "@/components/SessionProvider";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -34,8 +35,10 @@ export default function RootLayout({
       <body
         className={`${plusJakartaSans.variable} ${notoSans.variable} antialiased`}
       >
-        <Navbar /> {/* Updated component */}
-        <main className="pt-20">{children}</main> {/* Adjusted pt-20 for new header height */}
+        <CustomSessionProvider>
+          <Navbar /> {/* Updated component */}
+          <main className="pt-20">{children}</main> {/* Adjusted pt-20 for new header height */}
+        </CustomSessionProvider>
       </body>
     </html>
   );

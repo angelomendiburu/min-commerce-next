@@ -1,7 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Heart, ShoppingBag, Menu } from "lucide-react"; // Assuming Menu for mobile
+import { Search, Heart, ShoppingBag, Menu } from "lucide-react";
+import { useSession, signIn, signOut } from "next-auth/react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -10,6 +14,8 @@ import {
   navigationMenuTriggerStyle
 } from "@/components/ui/navigation-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"; // For mobile nav
+import { useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
 
 // Placeholder for Logo SVG - replace with actual SVG if available
 const Logo = () => (
@@ -29,6 +35,23 @@ const navLinks = [
 ];
 
 export function Navbar() {
+  const { data: session, status } = useSession();
+  const user = session?.user;
+  const [searchTerm, setSearchTerm] = useState("");
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    // Dispara evento global para que catalog-client lo escuche
+    window.dispatchEvent(new CustomEvent("catalog-search", { detail: value }));
+    // Si no estamos en /catalog y hay término de búsqueda, redirigir a /catalog?search=...
+    if (pathname !== "/catalog" && value.trim() !== "") {
+      router.push(`/catalog?search=${encodeURIComponent(value)}`);
+    }
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-solid border-b-[#f2f2f2] bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-10 py-3">
       <div className="container mx-auto flex h-14 items-center">
@@ -59,6 +82,8 @@ export function Navbar() {
               type="search"
               placeholder="Search products..."
               className="h-9 pl-10 w-60"
+              value={searchTerm}
+              onChange={handleSearch}
             />
           </div>
           <Button variant="ghost" size="icon">
@@ -71,6 +96,33 @@ export function Navbar() {
               <span className="sr-only">Shopping Bag</span>
             </Button>
           </Link>
+          {/* Usuario logueado */}
+          {user ? (
+            <div className="flex items-center space-x-2">
+              <Avatar>
+                <AvatarImage src={user.image || undefined} alt={user.name || user.email || "User"} />
+                <AvatarFallback>{user.name?.[0] || user.email?.[0] || "U"}</AvatarFallback>
+              </Avatar>
+              <span className="text-sm font-medium text-muted-foreground">{user.name || user.email}</span>
+              {/* Botón Panel Administrativo solo para admin */}
+              {user.email === "angelomendiburu@gmail.com" || user.role === "admin" ? (
+                <Link href="/admin">
+                  <Button variant="secondary" size="sm">Panel Administrativo</Button>
+                </Link>
+              ) : null}
+              <Button variant="outline" size="sm" onClick={async () => {
+                // Registrar logout antes de cerrar sesión
+                await fetch("/api/user-action", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ action: "logout", details: "Logout desde navbar" })
+                });
+                signOut();
+              }}>Salir</Button>
+            </div>
+          ) : (
+            <Button variant="outline" size="sm" onClick={() => signIn()}>Iniciar sesión</Button>
+          )}
         </div>
 
         {/* Mobile Navigation - Hamburger Menu */}

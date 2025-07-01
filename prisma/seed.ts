@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-// Datos de ejemplo para los productos
+// Datos de ejemplo para los productos (sin repetidos y con nombres únicos)
 const productsData = [
   {
     name: 'Joma Sport Elite Runner',
@@ -10,7 +10,9 @@ const productsData = [
     price: 159.99,
     image: 'https://www.joma-sport.com/dw/image/v2/BFRV_PRD/on/demandware.static/-/Sites-joma-masterCatalog/default/dwb6befb94/images/medium/JSPEEW2417V_4.jpg?sw=900&sh=900&sm=fit',
     stock: 15
-  },  {    name: 'Reebok Nano X3',
+  },
+  {
+    name: 'Reebok Nano X3',
     description: 'Zapatillas deportivas Reebok Nano X3, perfectas para CrossFit y entrenamiento',
     price: 129.99,
     image: 'https://home.ripley.com.pe/Attachment/WOP_5/2084313820355/2084313820355_2.jpg',
@@ -22,7 +24,8 @@ const productsData = [
     price: 94.99,
     image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHO46oYeDf8VB9nAxkJyzbfEoWawkq18d-wAqyLvB25oDClKySpd9Jh606rEKEQF0IxOI&usqp=CAU',
     stock: 12
-  },  {
+  },
+  {
     name: 'Brooks Ghost 15',
     description: 'Zapatillas de running Brooks Ghost 15 con tecnología de amortiguación superior',
     price: 189.99,
@@ -72,13 +75,6 @@ const productsData = [
     stock: 20
   },
   {
-    name: 'Urban Style Pro',
-    description: 'Zapatillas urbanas para el día a día',
-    price: 79.99,
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHO46oYeDf8VB9nAxkJyzbfEoWawkq18d-wAqyLvB25oDClKySpd9Jh606rEKEQF0IxOI&usqp=CAU',
-    stock: 12
-  },
-  {
     name: 'Sport Running Pro',
     description: 'Zapatillas profesionales para running y competición',
     price: 129.99,
@@ -98,20 +94,6 @@ const productsData = [
     price: 109.99,
     image: 'https://muzikercdn.com/uploads/products/12625/1262517/thumb_d_gallery_base_d3a4488b.jpg',
     stock: 10
-  },
-  {
-    name: 'Blue Denim Limited',
-    description: 'Edición limitada de zapatillas en denim',
-    price: 149.99,
-    image: 'https://image.slidesdocs.com/responsive-images/background/brandless-blue-denim-sneakers-with-blank-tag-impeccably-visualized-on-a-white-3d-render-powerpoint-background_0553bc4d17__960_540.jpg',
-    stock: 5
-  },
-  {
-    name: 'Sport Casual Flex',
-    description: 'Zapatillas versátiles para deporte y casual',
-    price: 84.99,
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcLZMN_5iGI7Jyal60bX70f2c38ABcFUbNpQ&s',
-    stock: 18
   },
   {
     name: 'Urban Light Runner',
@@ -141,6 +123,20 @@ async function main() {
       });
       console.log(`✓ Producto creado: ${createdProduct.name}`);
     }
+
+    // Crear o actualizar usuario admin
+    const adminEmail = "angelomendiburu@gmail.com";
+    await prisma.user.upsert({
+      where: { email: adminEmail },
+      update: { role: "admin" },
+      create: {
+        email: adminEmail,
+        name: "Angelo Mendiburu",
+        role: "admin",
+        // Puedes agregar más campos si tu modelo lo requiere (ej: hashed password, image, etc)
+      },
+    });
+    console.log(`👑 Usuario admin asegurado: ${adminEmail}`);
 
     // Verificar que los productos se crearon
     const count = await prisma.product.count();
