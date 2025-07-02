@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Min Commerce Next
+
+Este es un proyecto [Next.js](https://nextjs.org) bootstrapped con [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
 
-First, run the development server:
+Primero, ejecuta el servidor de desarrollo:
 
 ```bash
 npm run dev
-# or
+# o
 yarn dev
-# or
+# o
 pnpm dev
-# or
+# o
 bun dev
 ```
 
-Open [http://localhost:3001](http://localhost:3001) with your browser to see the result.
+Abre [http://localhost:3001](http://localhost:3001) en tu navegador para ver el resultado.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Puedes empezar a editar la página modificando `app/page.tsx`. La página se actualiza automáticamente al guardar los cambios.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Este proyecto usa [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) para optimizar y cargar [Geist](https://vercel.com/font).
+
+---
+
+## Roles implementados y permisos
+
+- **admin**
+  - Acceso total a todas las rutas, incluyendo la ruta de administración `/admin`.
+  - Puede ver y gestionar usuarios, productos y órdenes.
+- **user**
+  - Acceso a rutas públicas y privadas de usuario (catálogo, carrito, checkout, órdenes, perfil).
+  - No puede acceder a la ruta `/admin` ni a funciones administrativas.
+
+### Asignación de roles
+- El usuario con correo **angelomendiburu@gmail.com** es el único con rol `admin` por defecto.
+- Todos los demás usuarios autenticados tienen rol `user`.
+
+---
+
+## Rutas protegidas y nivel de acceso
+
+| Ruta                | Acceso        | Descripción                                 |
+|---------------------|--------------|---------------------------------------------|
+| `/admin`            | admin        | Panel de administración (solo admin)        |
+| `/catalog`          | user, admin  | Catálogo de productos                       |
+| `/cart`             | user, admin  | Carrito de compras                          |
+| `/checkout`         | user, admin  | Proceso de compra                           |
+| `/orders`           | user, admin  | Historial de órdenes                        |
+| `/profile`          | user, admin  | Perfil de usuario                           |
+
+---
+
+## Instrucciones para probar como admin vs user
+
+1. **Como admin:**
+   - Inicia sesión con Google o GitHub usando el correo `angelomendiburu@gmail.com`.
+   - Podrás acceder a `/admin` y ver el panel de administración.
+2. **Como user:**
+   - Inicia sesión con cualquier otro correo.
+   - No tendrás acceso a `/admin` (serás redirigido o verás un error de acceso denegado).
+   - Podrás navegar por el catálogo, carrito, checkout y órdenes.
+
+---
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+Para aprender más sobre Next.js, revisa:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [Next.js Documentation](https://nextjs.org/docs) - aprende sobre las características y API de Next.js.
+- [Learn Next.js](https://nextjs.org/learn) - tutorial interactivo.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Puedes ver el [repositorio de Next.js en GitHub](https://github.com/vercel/next.js).
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+La forma más fácil de desplegar tu app Next.js es usando [Vercel](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Consulta la [documentación de despliegue](https://nextjs.org/docs/app/building-your-application/deploying) para más detalles.
